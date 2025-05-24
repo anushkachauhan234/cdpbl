@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>CompilerPro - Output</title>
+    <style>
+        textarea {
+            width: 90%;
+            font-family: monospace;
+        }
+        .phase-buttons button {
+            margin-right: 10px;
+            margin-bottom: 15px;
+        }
+    </style>
+    <script>
+        const phaseOutputs = {
+            lexical: `{{ lexical_output | replace('\n', '\\n') | replace('\r', '') | escape }}`,
+            syntax: `{{ syntax_output | replace('\n', '\\n') | replace('\r', '') | escape }}`,
+            semantic: `{{ semantic_output | replace('\n', '\\n') | replace('\r', '') | escape }}`,
+            codegen: `{{ codegen_output | replace('\n', '\\n') | replace('\r', '') | escape }}`
+        };
+
+        window.onload = () => {
+            // Show final evaluated output on load
+            document.getElementById('mainOutput').value = `{{ final_output }}`;
+            document.getElementById('phaseOutput').value = "";  // empty initially
+        };
+
+        function showPhase(phase) {
+            document.getElementById('phaseOutput').value = phaseOutputs[phase];
+        }
+    </script>
+</head>
+<body>
+    <h1>Compilation Output</h1>
+
+    <label for="mainOutput"><b>Final Output:</b></label><br/>
+    <textarea id="mainOutput" rows="3" readonly></textarea><br/><br/>
+
+    <div class="phase-buttons">
+        <button type="button" onclick="showPhase('lexical')">Lexical Phase</button>
+        <button type="button" onclick="showPhase('syntax')">Syntax Phase</button>
+        <button type="button" onclick="showPhase('semantic')">Semantic Phase</button>
+        <button type="button" onclick="showPhase('codegen')">Code Gen Phase</button>
+    </div>
+
+    <label for="phaseOutput"><b>Phase Output:</b></label><br/>
+    <textarea id="phaseOutput" rows="12" readonly></textarea><br/><br/>
+
+    <form action="/">
+        <button type="submit">Back / Reset Code</button>
+    </form>
+</body>
+</html>

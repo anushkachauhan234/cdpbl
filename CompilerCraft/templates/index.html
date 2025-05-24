@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Compiler Input</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 40px;
+            background: #f9f9f9;
+            color: #333;
+        }
+        textarea {
+            width: 100%;
+            max-width: 600px;
+            height: 120px;
+            font-size: 16px;
+            padding: 10px;
+            border-radius: 6px;
+            border: 1px solid #ccc;
+            resize: vertical;
+            box-shadow: inset 0 1px 3px #ddd;
+        }
+        button {
+            margin-top: 10px;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #0078d7;
+            border: none;
+            border-radius: 6px;
+            color: white;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #005ea3;
+        }
+        h1 {
+            margin-bottom: 15px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Enter your code</h1>
+    <form method="post" action="{{ url_for('run_code') }}">
+        <textarea name="code" placeholder="Example: exit(5+2)"></textarea><br />
+        <button type="submit">Run</button>
+    </form>
+</body>
+</html>

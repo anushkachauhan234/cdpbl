@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <title>Compilation Phases Output</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 40px;
+            background: #f9f9f9;
+            color: #222;
+        }
+        h2, h3 {
+            margin-bottom: 8px;
+        }
+        .main-output {
+            background: #e3f2fd;
+            border-left: 6px solid #2196f3;
+            padding: 15px 20px;
+            font-weight: 600;
+            font-size: 1.3em;
+            max-width: 700px;
+            margin-bottom: 30px;
+            border-radius: 6px;
+            white-space: pre-wrap;
+        }
+        .phases {
+            margin-bottom: 20px;
+        }
+        .phases a {
+            margin-right: 15px;
+            text-decoration: none;
+            color: #0078d7;
+            font-weight: 600;
+            font-size: 1em;
+            padding: 6px 12px;
+            border-radius: 5px;
+            transition: background-color 0.25s ease;
+            user-select: none;
+        }
+        .phases a:hover {
+            background-color: #d0e7ff;
+        }
+        .phases a.active {
+            background-color: #0078d7;
+            color: white;
+            cursor: default;
+        }
+        .phase-output-box {
+            background: white;
+            border: 2px solid #0078d7;
+            padding: 20px;
+            max-width: 700px;
+            min-height: 150px;
+            font-family: monospace;
+            white-space: pre-wrap;
+            border-radius: 6px;
+            margin-bottom: 30px;
+            overflow-x: auto;
+        }
+        .btn-reset {
+            display: inline-block;
+            padding: 10px 22px;
+            background-color: #f44336;
+            color: white;
+            font-weight: 600;
+            border-radius: 6px;
+            text-decoration: none;
+            transition: background-color 0.3s ease;
+            user-select: none;
+        }
+        .btn-reset:hover {
+            background-color: #b71c1c;
+        }
+    </style>
+</head>
+<body>
+    <h2>Main Output:</h2>
+    <div class="main-output">{{ main_output }}</div>
+
+    <div class="phases">
+        <a href="{{ url_for('phase_output', phase_name='lexical') }}"
+           class="{% if phase_name == 'lexical' %}active{% endif %}">Lexical Analysis</a>
+        <a href="{{ url_for('phase_output', phase_name='syntax') }}"
+           class="{% if phase_name == 'syntax' %}active{% endif %}">Syntax Analysis</a>
+        <a href="{{ url_for('phase_output', phase_name='semantic') }}"
+           class="{% if phase_name == 'semantic' %}active{% endif %}">Semantic Analysis</a>
+        <a href="{{ url_for('phase_output', phase_name='intermediate') }}"
+           class="{% if phase_name == 'intermediate' %}active{% endif %}">Intermediate Code Gen</a>
+        <a href="{{ url_for('phase_output', phase_name='optimization') }}"
+           class="{% if phase_name == 'optimization' %}active{% endif %}">Optimization</a>
+        <a href="{{ url_for('phase_output', phase_name='codegen') }}"
+           class="{% if phase_name == 'codegen' %}active{% endif %}">Code Generation</a>
+        <a href="{{ url_for('phase_output', phase_name='linking') }}"
+           class="{% if phase_name == 'linking' %}active{% endif %}">Linking</a>
+    </div>
+
+    <h3>Selected Phase Output:</h3>
+    <div class="phase-output-box">{{ phase_output }}</div>
+
+    <a href="{{ url_for('reset') }}" class="btn-reset">Back / Reset</a>
+</body>
+</html>
