@@ -54,30 +54,155 @@ def semantic_analysis():
     ]
 
 def intermediate_code_generation():
-    # Mock intermediate representation
-    return [
-        "t1 = 5",
-        "t2 = 2",
-        "t3 = t1 + t2",
-        "call exit with argument t3"
-    ]
+    code = session.get('code', '')
+    match = re.search(r"exit\((.*?)\)", code)
+    if not match:
+        return ["No exit() expression found."]
+    
+    expr = match.group(1).strip()
+    postfix = infix_to_postfix(expr)
+    tac, final_temp = generate_tac_from_postfix(postfix)
+    tac.append(f"call exit with {final_temp}")
+    return tac
+
+def infix_to_postfix(expr):
+    precedence = {'+':1, '-':1, '*':2, '/':2, '(':0}
+    output = []
+    stack = []
+    tokens = re.findall(r'\d+|\+|\-|\*|\/|\(|\)', expr)
+
+    for token in tokens:
+        if token.isdigit():
+            output.append(token)
+        elif token == '(':
+            stack.append(token)
+        elif token == ')':
+            while stack and stack[-1] != '(':
+                output.append(stack.pop())
+            stack.pop()
+        else:
+            while stack and precedence[stack[-1]] >= precedence[token]:
+                output.append(stack.pop())
+            stack.append(token)
+
+    while stack:
+        output.append(stack.pop())
+    
+    return output
+
+def generate_tac_from_postfix(postfix):
+    tac = []
+    stack = []
+    temp_counter = 1
+
+    for token in postfix:
+        if token.isdigit():
+            temp_var = f"t{temp_counter}"
+            tac.append(f"{temp_var} = {token}")
+            stack.append(temp_var)
+            temp_counter += 1
+        else:
+            right = stack.pop()
+            left = stack.pop()
+            temp_var = f"t{temp_counter}"
+            tac.append(f"{temp_var} = {left} {token} {right}")
+            stack.append(temp_var)
+            temp_counter += 1
+
+    return tac, stack[-1]
+
 
 def optimization():
-    # Mock optimization steps
-    return [
-        "Constant folding applied: 5 + 2 = 7",
-        "Optimized intermediate code:",
-        "call exit with argument 7"
-    ]
+    code = session.get('code', '')
+    match = re.search(r"exit\((.*?)\)", code)
+    if not match:
+        return ["No exit() expression found."]
+    
+    expr = match.group(1)
+    
+    try:
+        # Evaluate the expression safely
+        safe_expr = re.sub(r'[^0-9+\-*/(). ]', '', expr)
+        result = eval(safe_expr)
+        return [
+            f"Constant folding applied: {expr} = {result}",
+            "Optimized intermediate code:",
+            f"call exit with argument {result}"
+        ]
+    except:
+        # Fallback if expression cannot be evaluated directly (e.g. variables)
+        return [
+            "Expression could not be constant folded.",
+            "Falling back to intermediate code generation."
+        ] + intermediate_code_generation()
+
 
 def code_generation():
-    # Mock assembly-like code generation
-    return [
-        "LOAD R1, #5",
-        "LOAD R2, #2",
-        "ADD R3, R1, R2",
-        "CALL exit, R3"
-    ]
+    code = session.get('code', '')
+    match = re.search(r"exit\((.*?)\)", code)
+    if not match:
+        return ["No exit() expression found."]
+    
+    expr = match.group(1)
+    safe_expr = re.sub(r'[^0-9+\-*/(). ]', '', expr)
+
+    try:
+        # Tokenize the expression
+        tokens = re.findall(r'\d+|[+\-*/()]', safe_expr)
+
+        # Convert to postfix (Reverse Polish Notation)
+        precedence = {'+': 1, '-': 1, '*': 2, '/': 2}
+        output = []
+        stack = []
+
+        for token in tokens:
+            if token.isdigit():
+                output.append(token)
+            elif token in precedence:
+                while stack and stack[-1] != '(' and precedence[stack[-1]] >= precedence[token]:
+                    output.append(stack.pop())
+                stack.append(token)
+            elif token == '(':
+                stack.append(token)
+            elif token == ')':
+                while stack and stack[-1] != '(':
+                    output.append(stack.pop())
+                stack.pop()
+        while stack:
+            output.append(stack.pop())
+
+        # Generate code from postfix
+        asm_code = []
+        reg_count = 1
+        stack = []
+
+        for token in output:
+            if token.isdigit():
+                reg = f"R{reg_count}"
+                asm_code.append(f"LOAD {reg}, #{token}")
+                stack.append(reg)
+                reg_count += 1
+            else:
+                right = stack.pop()
+                left = stack.pop()
+                reg = f"R{reg_count}"
+                if token == '+':
+                    asm_code.append(f"ADD {reg}, {left}, {right}")
+                elif token == '-':
+                    asm_code.append(f"SUB {reg}, {left}, {right}")
+                elif token == '*':
+                    asm_code.append(f"MUL {reg}, {left}, {right}")
+                elif token == '/':
+                    asm_code.append(f"DIV {reg}, {left}, {right}")
+                stack.append(reg)
+                reg_count += 1
+
+        asm_code.append(f"CALL exit, {stack[-1]}")
+        return asm_code
+
+    except Exception as e:
+        return ["Error generating assembly code.", str(e)]
+
 
 def linking():
     # Mock linking output
