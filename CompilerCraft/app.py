@@ -51,7 +51,6 @@ def syntax_analysis(tokens):
         ""
     ] + tree_lines
 
-
 def build_syntax_tree(expr):
     # Support for +, -, *, /
     precedence = {'+': 1, '-': 1, '*': 2, '/': 2}
@@ -97,17 +96,30 @@ def build_syntax_tree(expr):
             node.right = right
             stack.append(node)
 
-    def format_tree(node, indent=""):
+    # The root of the tree is the last node in stack
+    root = stack[-1] if stack else None
+
+    # This function formats the tree for display
+    def format_tree(node, indent="", last=True):
         if node is None:
             return []
-        right = format_tree(node.right, indent + "   ")
-        this = [indent + str(node.value)]
-        left = format_tree(node.left, indent + "   ")
-        return right + this + left
 
-    # Generate tree lines
-    root = stack[0] if stack else Node('?')
+        tree_str = []
+        prefix = indent + ("└── " if last else "├── ")
+        tree_str.append(prefix + str(node.value))
+
+        indent += "    " if last else "│   "
+        children = [node.left, node.right]
+        children = [child for child in children if child]
+
+        for i, child in enumerate(children):
+            tree_str += format_tree(child, indent, i == len(children) - 1)
+
+        return tree_str
+
     return format_tree(root)
+
+
  
 def semantic_analysis():
     # Simple mock semantic analysis output for demo

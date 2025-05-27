@@ -1,50 +1,189 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <title>Compiler Input</title>
-    <style>
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 40px;
-            background: #f9f9f9;
-            color: #333;
-        }
-        textarea {
-            width: 100%;
-            max-width: 600px;
-            height: 120px;
-            font-size: 16px;
-            padding: 10px;
-            border-radius: 6px;
-            border: 1px solid #ccc;
-            resize: vertical;
-            box-shadow: inset 0 1px 3px #ddd;
-        }
-        button {
-            margin-top: 10px;
-            padding: 10px 20px;
-            font-size: 16px;
-            background-color: #0078d7;
-            border: none;
-            border-radius: 6px;
-            color: white;
-            cursor: pointer;
-            transition: background-color 0.3s ease;
-        }
-        button:hover {
-            background-color: #005ea3;
-        }
-        h1 {
-            margin-bottom: 15px;
-        }
-    </style>
+  <meta charset="UTF-8" />
+  <title>Compiler Craft</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;700&display=swap');
+
+    /* Background gradient animation */
+    @keyframes gradientShift {
+      0% {
+        background-position: 0% 50%;
+      }
+      50% {
+        background-position: 100% 50%;
+      }
+      100% {
+        background-position: 0% 50%;
+      }
+    }
+
+    /* Floating animation for textarea */
+    @keyframes floatUpDown {
+      0%, 100% {
+        transform: translateY(0);
+        box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      }
+      50% {
+        transform: translateY(-8px);
+        box-shadow: 0 15px 25px rgba(0,0,0,0.15);
+      }
+    }
+
+    /* Fade-in animation */
+    @keyframes fadeInUp {
+      from {
+        opacity: 0;
+        transform: translateY(20px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    body {
+      font-family: 'Poppins', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 40px auto;
+      max-width: 700px;
+      background: linear-gradient(-45deg, #6a11cb, #2575fc, #6a11cb, #2575fc);
+      background-size: 400% 400%;
+      animation: gradientShift 15s ease infinite;
+      color: #fff;
+      line-height: 1.6;
+      padding: 40px 30px;
+      border-radius: 15px;
+      box-shadow: 0 10px 40px rgba(0,0,0,0.3);
+      overflow-x: hidden;
+    }
+
+    h1 {
+      margin-bottom: 10px;
+      font-weight: 700;
+      font-size: 3rem;
+      color: #fff;
+      position: relative;
+      animation: fadeInUp 1s ease forwards;
+    }
+
+    /* Animated underline */
+    h1::after {
+      content: '';
+      position: absolute;
+      left: 0;
+      bottom: -8px;
+      width: 60px;
+      height: 4px;
+      background: #fff;
+      border-radius: 2px;
+      animation: underlineExpand 1.2s ease forwards;
+      transform-origin: left;
+      transform: scaleX(0);
+      opacity: 0;
+    }
+    @keyframes underlineExpand {
+      to {
+        transform: scaleX(1);
+        opacity: 1;
+      }
+    }
+
+    h3 {
+      margin-top: 0;
+      margin-bottom: 25px;
+      font-weight: 500;
+      font-size: 1.5rem;
+      color: #e0e0ffcc;
+      animation: fadeInUp 1.2s ease forwards;
+      animation-delay: 0.2s;
+      opacity: 0;
+    }
+
+    form {
+      animation: fadeInUp 1.4s ease forwards;
+      animation-delay: 0.4s;
+      opacity: 0;
+    }
+
+    textarea {
+      width: 100%;
+      max-width: 600px;
+      height: 160px;
+      font-size: 18px;
+      padding: 16px 18px;
+      border-radius: 14px;
+      border: none;
+      box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+      resize: vertical;
+      font-family: 'Poppins', monospace, monospace;
+      color: #222;
+      background-color: #fff;
+      transition: box-shadow 0.3s ease, transform 0.3s ease;
+      animation: floatUpDown 6s ease-in-out infinite;
+    }
+    textarea:focus {
+      outline: none;
+      box-shadow: 0 0 15px 3px rgba(255,255,255,0.7);
+      transform: translateY(-5px);
+      background-color: #f0f8ff;
+    }
+
+    button {
+      margin-top: 20px;
+      padding: 14px 34px;
+      font-size: 18px;
+      background: linear-gradient(45deg, #ff6a00, #ee0979);
+      border: none;
+      border-radius: 14px;
+      color: white;
+      cursor: pointer;
+      font-weight: 600;
+      box-shadow: 0 6px 18px rgba(238, 9, 121, 0.6);
+      transition: background 0.4s ease, box-shadow 0.4s ease, transform 0.3s ease;
+      user-select: none;
+    }
+    button:hover,
+    button:focus {
+      background: linear-gradient(45deg, #ee0979, #ff6a00);
+      box-shadow: 0 10px 28px rgba(238, 9, 121, 0.85);
+      transform: translateY(-4px) scale(1.05);
+      outline: none;
+    }
+    button:active {
+      transform: translateY(-2px) scale(1.02);
+      box-shadow: 0 6px 18px rgba(238, 9, 121, 0.7);
+    }
+
+    /* Responsive tweaks */
+    @media (max-width: 650px) {
+      body {
+        margin: 20px 15px;
+        padding: 20px 15px;
+      }
+      textarea {
+        max-width: 100%;
+        height: 140px;
+      }
+      h1 {
+        font-size: 2.4rem;
+      }
+      h3 {
+        font-size: 1.3rem;
+      }
+      button {
+        font-size: 16px;
+        padding: 12px 24px;
+      }
+    }
+  </style>
 </head>
 <body>
-    <h1>Enter your code</h1>
-    <form method="post" action="{{ url_for('run_code') }}">
-        <textarea name="code" placeholder="Example: exit(5+2)"></textarea><br />
-        <button type="submit">Run</button>
-    </form>
+  <h1>COMPILER CRAFT</h1>
+  <h3>Enter your code below</h3>
+  <form method="post" action="{{ url_for('run_code') }}">
+    <textarea name="code" placeholder="Example: exit(5+2)" spellcheck="false"></textarea><br />
+    <button type="submit">Run</button>
+  </form>
 </body>
 </html>
