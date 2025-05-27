@@ -37,14 +37,78 @@ def lexer(code):
     return tokens
 
 def syntax_analysis(tokens):
-    # Simple mock syntax analysis output for demo
+    code = session.get('code', '')
+    match = re.search(r"exit\((.*?)\)", code)
+    expr = match.group(1) if match else "?"
+
+    tree_lines = build_syntax_tree(expr)
+
     return [
         "Parsing started.",
         "Detected function call to 'exit'.",
-        "Expression inside parentheses parsed as addition operation.",
-        "Syntax tree constructed successfully."
-    ]
+        "Expression inside parentheses parsed.",
+        "Syntax tree constructed successfully:",
+        ""
+    ] + tree_lines
 
+
+def build_syntax_tree(expr):
+    # Support for +, -, *, /
+    precedence = {'+': 1, '-': 1, '*': 2, '/': 2}
+    output = []
+    stack = []
+
+    # Tokenize expression
+    tokens = re.findall(r'\d+|[+\-*/()]', expr)
+
+    # Infix to Postfix using Shunting Yard Algorithm
+    for token in tokens:
+        if token.isdigit():
+            output.append(token)
+        elif token in precedence:
+            while stack and stack[-1] != '(' and precedence[stack[-1]] >= precedence[token]:
+                output.append(stack.pop())
+            stack.append(token)
+        elif token == '(':
+            stack.append(token)
+        elif token == ')':
+            while stack and stack[-1] != '(':
+                output.append(stack.pop())
+            stack.pop()
+    while stack:
+        output.append(stack.pop())
+
+    # Build tree from postfix
+    class Node:
+        def __init__(self, value):
+            self.value = value
+            self.left = None
+            self.right = None
+
+    stack = []
+    for token in output:
+        if token.isdigit():
+            stack.append(Node(token))
+        else:  # operator
+            right = stack.pop()
+            left = stack.pop()
+            node = Node(token)
+            node.left = left
+            node.right = right
+            stack.append(node)
+
+    def format_tree(node, indent=""):
+        if node is None:
+            return []
+        right = format_tree(node.right, indent + "   ")
+        this = [indent + str(node.value)]
+        left = format_tree(node.left, indent + "   ")
+        return right + this + left
+
+    # Generate tree lines
+    root = stack[0] if stack else Node('?')
+    return format_tree(root)
+ 
 def semantic_analysis():
     # Simple mock semantic analysis output for demo
     return [
