@@ -12,7 +12,7 @@ def evaluate_exit_expression(code):
             safe_expr = re.sub(r'[^0-9+\-*/(). ]', '', expr)
             result = eval(safe_expr)
             return result
-        except Exception:
+        except Exception:  
             return "Error evaluating expression"
     return "No exit() call found"
 
